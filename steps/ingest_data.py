@@ -18,17 +18,12 @@ class IngestData:
 
 
 @step
-def ingest_data() -> pd.DataFrame:
-    """
-    Args:
-        None
-    Returns:
-        df: pd.DataFrame
-    """
+def ingest_df(data_path: str) -> pd.DataFrame:
     try:
-        ingest_data = IngestData()
+        ingest_data = IngestData(data_path)
         df = ingest_data.get_data()
         return df
     except Exception as e:
         logging.error(e)
         raise e
+
