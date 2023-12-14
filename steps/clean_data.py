@@ -1,22 +1,34 @@
 import logging
 import pandas as pd
 from zenml import step
+from src.data_cleaning import DataCleaning, DataDevideStrategy, DataPreProcessStrategy  
+from typing_extensions import Annotated
+from typing import Tuple
 
 @step
-def clean_df(df: pd.DataFrame) -> pd.DataFrame:
+def clean_data(
+    data: pd.DataFrame,
+) -> Tuple[
+    Annotated[pd.DataFrame, "x_train"],
+    Annotated[pd.DataFrame, "x_test"],
+    Annotated[pd.Series, "y_train"],
+    Annotated[pd.Series, "y_test"],
+]:
+    """Data cleaning class which preprocesses the data and divides it into train and test data.
+
+    Args:
+        data: pd.DataFrame
+    """
     try:
-        # Drop rows with missing values
-        cleaned_df = df.dropna()
-        
+        preprocess_strategy = DataPreprocessStrategy()
+        data_cleaning = DataCleaning(data, preprocess_strategy)
+        preprocessed_data = data_cleaning.handle_data()
 
-        # Ensure that the cleaned DataFrame is not empty
-        if cleaned_df.empty:
-            raise ValueError("The resulting DataFrame is empty after cleaning.")
-
-        return cleaned_df
-
+        divide_strategy = DataDivideStrategy()
+        data_cleaning = DataCleaning(preprocessed_data, divide_strategy)
+        x_train, x_test, y_train, y_test = data_cleaning.handle_data()
+        logging.info("Data Cleaning completed")
+        return x_train, x_test, y_train, y_test
     except Exception as e:
-        # Log any exception that occurs
-        logging.error(f"Error in clean_df step: {e}")
-        # Optionally, re-raise the exception to halt the pipeline
+        logging.error("Error in clening data:{}".format(e))
         raise e
