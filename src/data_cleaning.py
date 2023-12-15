@@ -11,7 +11,7 @@ class DataStrategy(ABC):
         pass
     
 
-class DataPreProcessStrategy():
+class DataPreprocessStrategy(DataStrategy):
     def handle_data(self, data: pd.DataFrame) -> pd.DataFrame:
         
         try:

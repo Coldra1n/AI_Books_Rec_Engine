@@ -1,12 +1,12 @@
 import logging
 import pandas as pd
 from zenml import step
-from src.data_cleaning import DataCleaning, DataDevideStrategy, DataPreProcessStrategy  
+from src.data_cleaning import DataCleaning, DataDivideStrategy, DataPreprocessStrategy 
 from typing_extensions import Annotated
 from typing import Tuple
 
 @step
-def clean_data(
+def clean_df(
     data: pd.DataFrame,
 ) -> Tuple[
     Annotated[pd.DataFrame, "x_train"],
